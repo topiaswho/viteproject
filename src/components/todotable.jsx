@@ -15,6 +15,7 @@ export default function TodoTable({ todos, deleteTodo }) {
           <tr key={index}>
             <td>{todo.description}</td>
             <td>{todo.date}</td>
+            <td>{todo.priority}</td>
             <td>
               <button onClick={() => deleteTodo(index)}>Delete</button>
             </td>
