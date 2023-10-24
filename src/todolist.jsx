@@ -3,9 +3,15 @@ import TodoTable from "./components/TodoTable";
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-material.css';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+
+
+import TextField from '@mui/material/TextField';
 
 function TodoList() {
-  const [todo, setTodo] = useState({ description: '', date: '', priority: '' });
+  const [todo, setTodo] = useState({ description: '', date: null, priority: '' });
   const [todos, setTodos] = useState([]);
 
   const inputChanged = (event) => {
@@ -13,15 +19,19 @@ function TodoList() {
     setTodo({ ...todo, [name]: value });
   }
 
+  const handleDateChange = (date) => {
+    setTodo({ ...todo, date: date });
+  }
+
   const addTodo = (event) => {
     event.preventDefault();
-    if (todo.description.trim() === '' || todo.date.trim() === '') {
+    if (todo.description.trim() === '' || !todo.date) {
       alert('Description and date are required fields.');
       return;
     }
     const newTodo = { ...todo };
     setTodos([...todos, newTodo]);
-    setTodo({ description: '', date: '', priority: '' });
+    setTodo({ description: '', date: null, priority: '' });
   }
 
   const deleteTodo = (index) => {
@@ -62,40 +72,43 @@ function TodoList() {
   ];
 
   return (
-    <>
-      <h1>Todolist</h1>
-      <input
-        type="text"
-        name="description"
-        onChange={inputChanged}
-        value={todo.description}
-        placeholder="Description"
-      />
-      <input
-        type="date"
-        name="date"
-        onChange={inputChanged}
-        value={todo.date}
-        placeholder="Date"
-      />
-      <input
-        type="text"
-        onChange={inputChanged}
-        placeholder="Priority"
-        name="priority"
-        value={todo.priority}
-      />
-      <button onClick={addTodo}>Add</button>
-      <div className="ag-theme-material" style={{ height: 400, width: '100%' }}>
-        <AgGridReact
-          gridOptions={gridOptions}
-          columnDefs={columnDefs}
-          rowData={todos}
+    <LocalizationProvider dateAdapter={AdapterDayjs}> {/* Käytetään LocalizationProvider */}
+      <>
+        <h1>Todolist</h1>
+        <input
+          type="text"
+          name="description"
+          onChange={inputChanged}
+          value={todo.description}
+          placeholder="Description"
         />
-      </div>
-      <button onClick={deleteTodo}>Delete</button>
-      <TodoTable todos={todos} deleteTodo={deleteTodo} />
-    </>
+        <DatePicker
+          value={todo.date}
+          onChange={handleDateChange}
+          renderInput={(params) => <TextField {...params} />}
+          label="Date"
+        />
+        <input
+          type="text"
+          onChange={inputChanged}
+          placeholder="Priority"
+          name="priority"
+          value={todo.priority}
+        />
+        <button onClick={addTodo}>Add</button>
+
+        <div className="ag-theme-material" style={{ height: 400, width: '100%' }}>
+          <AgGridReact
+            gridOptions={gridOptions}
+            columnDefs={columnDefs}
+            rowData={todos}
+          />
+        </div>
+        
+        <button onClick={deleteTodo}>Delete</button>
+        <TodoTable todos={todos} deleteTodo={deleteTodo} />
+      </>
+    </LocalizationProvider>
   );
 }
 
