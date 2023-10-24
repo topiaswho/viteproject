@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import TodoTable from "./components/TodoTable";
+
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-material.css';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-
-
+import TabApp from './components/tabapp';
 import TextField from '@mui/material/TextField';
+
 
 function TodoList() {
   const [todo, setTodo] = useState({ description: '', date: null, priority: '' });
@@ -72,7 +72,8 @@ function TodoList() {
   ];
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}> {/* Käytetään LocalizationProvider */}
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <TabApp /> {/* Käytetään TabApp-komponenttia */}
       <>
         <h1>Todolist</h1>
         <input
@@ -106,7 +107,7 @@ function TodoList() {
         </div>
         
         <button onClick={deleteTodo}>Delete</button>
-        <TodoTable todos={todos} deleteTodo={deleteTodo} />
+        
       </>
     </LocalizationProvider>
   );
